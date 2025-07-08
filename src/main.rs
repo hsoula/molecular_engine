@@ -6,7 +6,9 @@ struct Compound {
     state : i32
 }
 impl Compound {
-
+    fn new(a : Atom) -> Compound {
+        Compound{form : a.form, state : a.state}
+    }
 }
 #[derive(PartialEq, Eq)]
 struct RuleC {
@@ -89,14 +91,16 @@ impl Chemistry {
         self.add_rule_from_array(array);        
     }
 
-    fn find_rule(&self, rule: Rule) -> Option<&Rule> {
-        let s = rule.get_key();
+    fn find_rule_from_string(&self, s : String) -> Option<&Rule> {
         for rule in &self.rules {
             if rule.get_key() == s {
                 return Some(&rule);
             }
         }
         None
+    }
+    fn find_rule(&self, r: Rule) -> Option<&Rule> {
+        self.find_rule_from_string(r.get_key())
     }
 }
 
@@ -105,7 +109,8 @@ struct Reactor {
     h:i32,
     nb :i32,
     atoms: Vec<Atom>,
-    grid : Vec<i32>
+    grid : Vec<i32>,
+    chem : Chemistry
 }
 
 fn xy_to_pos(x: i32, y: i32, w: i32) -> usize {
@@ -117,9 +122,18 @@ impl Reactor {
 
         let atoms = Vec::new();
         let grid = vec![-1 ; (w * h) as usize];
-        Reactor {w, h, nb, atoms, grid}
+        Reactor {w, h, nb, atoms, grid, chem: Chemistry::new()}
+    }
+    fn add_rule_from_array(&mut self, array: Vec<i32>) {
+        self.chem.add_rule_from_array(array);
+    }
+    fn add_rule_from_text(&mut self, line: String) {
+        self.chem.add_rule_from_text(line);
     }
 
+    // fn get_collision_rule_from_ids(&mut self, id1: i32, id2: i32) ->  RuleC{
+    //     RuleC::new(true, a: Compound::new(self.atoms[id1 as usize]), b: Compound::new(self.atoms[id1 as usize]))
+    // }
     fn fill_random(&mut self) {
 
         for i in 0..self.nb {
@@ -154,6 +168,9 @@ impl Reactor {
         }
         false
     }
+    fn resolve_collision(&mut self, id1:i32, id2:i32){
+
+    }
     fn move_atom(&mut self, id: i32)  -> i32 {
 
         let index: u8 = rand::random_range(0..4);
@@ -170,12 +187,13 @@ impl Reactor {
 
         if self.in_bounds(nx, ny) {
             if !self.not_empty(nx, ny) {
-                // contact deal with contact
+                let id2 = self.grid[xy_to_pos(nx, ny, self.w)];
+                self.resolve_collision(id, id2);
                 nb_contacts += 1;
             }
             else
             {
-                self.update_atom(id, nx, ny);
+                self.update_atom_position(id, nx, ny);
             }
         }
         nb_contacts
@@ -195,8 +213,13 @@ impl Reactor {
         }
         -1
     }
-
-    fn update_atom(&mut self, id : i32, nx: i32, ny: i32) {
+    fn set_atom_reaction_at(&mut self, form:i32, state:i32, id:i32) {
+        if id >= 0 && id < self.atoms.len() as i32 {
+            self.atoms[id as usize].form = form;
+            self.atoms[id as usize].state = state;
+        }
+    }
+    fn update_atom_position(&mut self, id : i32, nx: i32, ny: i32) {
         let x = self.atoms[id as usize].x;
         let y = self.atoms[id as usize].y;
         self.grid[(x + y * self.w) as usize] = -1;
@@ -224,12 +247,11 @@ struct Atom{
     link : Vec<i32>,
     id : i32,
     form : i32,
-     state : i32
+    state : i32
 }
 
 impl Atom{
     fn new(x: i32, y: i32, id : i32) -> Atom {
-
         Atom {x, y, link:Vec::new(),  id, form:-1, state:-1 }
     }
 
@@ -238,6 +260,9 @@ impl Atom{
     }
     fn set_state(&mut self, state : i32) {
         self.state = state;
+    }
+    fn get_rule_string(self) -> String {
+        self.form.to_string() + " " + &self.state.to_string()
     }
     fn compound(&self) -> Compound {
         Compound {form: self.form, state: self.state}
