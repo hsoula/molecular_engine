@@ -1,108 +1,17 @@
+mod chemistry;
+mod compound;
+mod rule;
+mod rulec;
+
+use crate::compound::Compound;
+use crate::rule::Rule;
+use crate::rulec::RuleC;
+use crate::chemistry::Chemistry;
+
+
 use rand;
 
-#[derive(PartialEq, Eq, PartialOrd)]
-struct Compound {
-    form : i32,
-    state : i32
-}
-impl Compound {
-    fn new(a : Atom) -> Compound {
-        Compound{form : a.form, state : a.state}
-    }
-}
-#[derive(PartialEq, Eq)]
-struct RuleC {
-    contact : bool,
-    a1 : Compound,
-    a2 : Compound,
-}
 
-impl RuleC {
-    fn new(contact :bool, a: Compound, b:Compound)->RuleC {
-        if a < b {
-            return RuleC{contact:contact, a1:a, a2:b}
-        }
-        RuleC{contact:contact, a1:b, a2:a}
-    }
-    fn get_key(&self) -> String {
-
-        let mut s = "".to_string();
-        s = s + " " + &self.contact.to_string();
-        s = s + " " + &self.a1.form.to_string();
-        s = s + " " + &self.a1.state.to_string();
-        s = s + " " + &self.a2.form.to_string();
-        s = s + " " + &self.a2.state.to_string();
-        s
-    }
-}
-struct Rule {
-    substrate : RuleC,
-    product : RuleC,
-    id : i32
-}
-impl Rule {
-    fn new_from_array(array: Vec<i32>, id:i32) -> Rule {
-        let contact_s = array[0];
-        let form_s1 = array[1];
-        let state_s1 = array[2];
-        let form_s2 = array[3];
-        let state_s2 = array[4];
-        let contact_p = array[0];
-        let form_p1 = array[1];
-        let state_p1 = array[2];
-        let form_p2 = array[3];
-        let state_p2 = array[4];
-        let s1 = Compound{form: form_s1, state: state_s1 };
-        let s2 = Compound{form: form_s2, state: state_s2 };
-        let p1 = Compound{form: form_p1, state: state_p1 };
-        let p2 = Compound{form: form_p2, state: state_p2 };
-        let r1 = RuleC::new(contact_s > 0, s1, s2);
-        let r2 = RuleC::new(contact_p > 0, p1, p2);
-        Rule{substrate: r1, product: r2, id: id}
-    }
-    fn get_key(self: &Rule) -> String {
-       self.substrate.get_key()
-    }
-}
-
-struct Chemistry {
-    nb_rules : i32,
-    rules : Vec<Rule>
-}
-
-
-impl Chemistry {
-    fn new()-> Chemistry {
-        Chemistry{nb_rules : 0, rules : Vec::new()}
-    }
-
-    fn add_rule_from_array(&mut self, array: Vec<i32> ) {
-        let id = self.nb_rules;
-        let rule = Rule::new_from_array(array, id);
-        self.rules.push(rule);
-        self.nb_rules += 1;
-    }
-    fn add_rule_from_text(&mut self, line: String) {
-        let parts: Vec<&str> = line.split_whitespace().collect();
-        let mut array : Vec<i32> = Vec::new();
-        for i in 0..parts.len() {
-            array.push(parts[i].trim().parse::<i32>().unwrap());    
-        }
-        self.add_rule_from_array(array);        
-    }
-
-    fn find_rule_from_string(&self, s : String) -> Option<&Rule> {
-        for rule in &self.rules {
-            if rule.get_key() == s {
-                return Some(&rule);
-            }
-        }
-        None
-    }
-    fn find_rule(&self, r: Rule) -> Option<&Rule> {
-        self.find_rule_from_string(r.get_key())
-    }
-}
 
 struct Reactor {
     w:i32,
@@ -123,6 +32,9 @@ impl Reactor {
         let atoms = Vec::new();
         let grid = vec![-1 ; (w * h) as usize];
         Reactor {w, h, nb, atoms, grid, chem: Chemistry::new()}
+    }
+    fn xy_to_pos(&self, x: i32, y: i32) -> usize {
+        (y * self.w + x) as usize
     }
     fn add_rule_from_array(&mut self, array: Vec<i32>) {
         self.chem.add_rule_from_array(array);
@@ -209,7 +121,7 @@ impl Reactor {
 
     fn get_atom_at(self, x:i32, y:i32) -> i32{
         if !self.not_empty(x, y){
-            return self.grid[(x + y * self.w) as usize];
+            return self.grid[self.xy_to_pos(x, y)];
         }
         -1
     }
