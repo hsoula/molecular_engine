@@ -22,6 +22,16 @@ impl RuleC {
         }
         RuleC{contact:contact, a1:b, a2:a}
     }
+    fn get_key(&self) -> String {
+
+        let mut s = "".to_string();
+        s = s + " " + &self.contact.to_string();
+        s = s + " " + &self.a1.form.to_string();
+        s = s + " " + &self.a1.state.to_string();
+        s = s + " " + &self.a2.form.to_string();
+        s = s + " " + &self.a2.state.to_string();
+        s
+    }
 }
 struct Rule {
     substrate : RuleC,
@@ -47,7 +57,9 @@ impl Rule {
         let r1 = RuleC::new(contact_s > 0, s1, s2);
         let r2 = RuleC::new(contact_p > 0, p1, p2);
         Rule{substrate: r1, product: r2, id: id}
-
+    }
+    fn get_key(self: &Rule) -> String {
+       self.substrate.get_key()
     }
 }
 
@@ -75,6 +87,16 @@ impl Chemistry {
             array.push(parts[i].trim().parse::<i32>().unwrap());    
         }
         self.add_rule_from_array(array);        
+    }
+
+    fn find_rule(&self, rule: Rule) -> Option<&Rule> {
+        let s = rule.get_key();
+        for rule in &self.rules {
+            if rule.get_key() == s {
+                return Some(&rule);
+            }
+        }
+        None
     }
 }
 
