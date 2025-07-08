@@ -1,6 +1,54 @@
 use rand;
 
+#[derive(PartialEq, PartialOrd)]
+struct Compound {
+    form : i32,
+    state : i32
+}
+impl Compound {
 
+}
+struct RuleC {
+    contact : bool,
+    a1 : Compound,
+    a2 : Compound,
+}
+
+impl RuleC {
+    fn new(contact :bool, a: Compound, b:Compound)->RuleC {
+        if a < b {
+            return RuleC{contact:contact, a1:a, a2:b}
+        }
+        RuleC{contact:contact, a1:b, a2:a}
+    }
+}
+struct Rule {
+    substrate : RuleC,
+    product : RuleC,
+    id : i32
+}
+impl Rule {
+    fn new_from_array(array: Vec<i32>, id:i32) -> Rule {
+        let contactS = array[0];
+        let formS1 = array[1];
+        let stateS1 = array[2];
+        let formS2= array[3];
+        let stateS2 = array[4];
+        let contactP = array[0];
+        let formP1 = array[1];
+        let stateP1 = array[2];
+        let formP2= array[3];
+        let     stateP2 = array[4];
+        let s1 = Compound{form:formS1, state:stateS1};
+        let s2 = Compound{form:formS2, state:stateS2};
+        let p1 = Compound{form:formP1, state:stateP1};
+        let p2 = Compound{form:formP2, state:stateP2};
+        let r1 = RuleC::new(contactS > 0, s1, s2);
+        let r2 = RuleC::new(contactP > 0, p1, p2);
+        Rule{substrate: r1, product: r2, id: id}
+
+    }
+}
 struct Reactor {
     w:i32,
     h:i32,
@@ -100,7 +148,6 @@ impl Reactor {
     fn update_atom(&mut self, id : i32, nx: i32, ny: i32) {
         let x = self.atoms[id as usize].x;
         let y = self.atoms[id as usize].y;
-       //println!("id: {}, x: {}, y: {}", id, x, y);
         self.grid[(x + y * self.w) as usize] = -1;
         self.atoms[id as usize].update(nx, ny);
         self.grid[(nx + ny * self.w) as usize] = id;
@@ -125,14 +172,29 @@ struct Atom{
     y: i32,
     link : Vec<i32>,
     id : i32,
-    // form : i32,
-    // state : i32
+    form : i32,
+     state : i32
 }
 
 impl Atom{
     fn new(x: i32, y: i32, id : i32) -> Atom {
 
-        Atom {x, y, link:Vec::new(),  id }
+        Atom {x, y, link:Vec::new(),  id, form:-1, state:-1 }
+    }
+
+    fn set_form(&mut self, form : i32) {
+        self.form = form;
+    }
+    fn set_state(&mut self, state : i32) {
+        self.state = state;
+    }
+    fn compound(&self) -> Compound {
+        Compound {form: self.form, state: self.state}
+    }
+
+    fn set_from_compound(&mut self, compound : Compound) {
+        self.form = compound.form;
+        self.state = compound.state;
     }
 
     fn link(&mut self, l: Atom ) {
