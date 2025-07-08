@@ -1,6 +1,6 @@
 use rand;
 
-#[derive(PartialEq, PartialOrd)]
+#[derive(PartialEq, Eq, PartialOrd)]
 struct Compound {
     form : i32,
     state : i32
@@ -8,6 +8,7 @@ struct Compound {
 impl Compound {
 
 }
+#[derive(PartialEq, Eq)]
 struct RuleC {
     contact : bool,
     a1 : Compound,
@@ -49,6 +50,34 @@ impl Rule {
 
     }
 }
+
+struct Chemistry {
+    nb_rules : i32,
+    rules : Vec<Rule>
+}
+
+
+impl Chemistry {
+    fn new()-> Chemistry {
+        Chemistry{nb_rules : 0, rules : Vec::new()}
+    }
+
+    fn add_rule_from_array(&mut self, array: Vec<i32> ) {
+        let id = self.nb_rules;
+        let rule = Rule::new_from_array(array, id);
+        self.rules.push(rule);
+        self.nb_rules += 1;
+    }
+    fn add_rule_from_text(&mut self, line: String) {
+        let parts: Vec<&str> = line.split_whitespace().collect();
+        let mut array : Vec<i32> = Vec::new();
+        for i in 0..parts.len() {
+            array.push(parts[i].trim().parse::<i32>().unwrap());    
+        }
+        self.add_rule_from_array(array);        
+    }
+}
+
 struct Reactor {
     w:i32,
     h:i32,
