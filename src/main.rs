@@ -1,3 +1,10 @@
+extern crate sdl3;
+
+use sdl3::pixels::Color;
+use sdl3::event::Event;
+use sdl3::keyboard::Keycode;
+use std::time::Duration;
+
 mod chemistry;
 mod compound;
 mod rule;
@@ -10,8 +17,9 @@ use crate::chemistry::Chemistry;
 use std::fs::File;
 use std::io::Write;
 use rand;
-
-
+use sdl3::rect::Rect;
+use sdl3::render::FRect;
+use serde_json::json;
 
 struct Reactor {
     w:i32,
@@ -98,7 +106,7 @@ impl Reactor {
         }
 
         if self.in_bounds(nx, ny) {
-            if !self.not_empty(nx, ny) {
+            if self.not_empty(nx, ny) {
                 let id2 = self.grid[xy_to_pos(nx, ny, self.w)];
                 self.resolve_collision(id, id2);
                 nb_contacts += 1;
@@ -145,7 +153,7 @@ impl Reactor {
     }
 
     fn not_empty(&self, x:i32, y:i32) -> bool {
-        if x >= 0 && x < self.w && y >= 0 && y < self.h {
+        if self.in_bounds(x, y) {
             let id = self.grid[(x + y * self.w) as usize];
             return id != -1;
         }
@@ -245,16 +253,78 @@ impl Atom{
 
 fn main() {
 
-    let n =30;
-    let w = 10;
-    let h = 10;
+    let n = 5000;
+    let w = 400;
+    let h = 400;
     let mut reactor = Reactor::new(w, h, n);
     reactor.fill_random();
     for i in 0..1000 {
         let x = reactor.move_all_atoms();
         println!("{} {}", i, x);
     }
+    let c = Compound{form: 0, state: 0};
+    let d = Compound{form: 0, state: 1};
+    let r = RuleC{contact:true, a1:c, a2:d};
+    let c1 = Compound{form: 0, state: 1};
+    let d1 = Compound{form: 0, state: 2};
+    let r1 = RuleC{contact:true, a1:c1, a2:d1};
+    let r0 = Rule{substrate:r, product:r1, id:0};
+    let mut c = Chemistry::new();
+    
+    let s = json!(r0);
+    println!("{}", s);
 
+    let sdl_context = sdl3::init().unwrap();
+    let video_subsystem = sdl_context.video().unwrap();
 
+    let window = video_subsystem.window("rust-sdl3 demo", 800, 800)
+        .position_centered()
+        .build()
+        .unwrap();
 
+    let mut canvas = window.into_canvas();
+
+    canvas.set_draw_color(Color::RGB(0, 0, 0));
+    // fills the canvas with the color we set in `set_draw_color`.
+    canvas.clear();
+    canvas.present();
+    let mut event_pump = sdl_context.event_pump().unwrap();
+    let mut t = 0;
+
+    'running: loop {
+
+        t += 1 ;
+        //canvas.clear();
+        canvas.set_draw_color(Color::RGB(0, 0, 0));
+        // fills the canvas with the color we set in `set_draw_color`.
+        canvas.clear();
+        //
+        for event in event_pump.poll_iter() {
+            match event {
+                Event::Quit {..} |
+                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+                    break 'running
+                },
+                _ => {}
+            }
+        }
+        // The rest of the game loop goes here...
+        let a = reactor.move_all_atoms();
+        println!("{} {}", t, a);
+        for i in reactor.atoms.iter() {
+            let x = i.x;
+            let y = i.y;
+            //println!("x: {}, y: {}", x, y);
+            let	step = (800 / reactor.w) as u32;
+            //draw_fsquare(&mwindow, step * x, step * y, (x + 1) * step, (y + 1) * step, color_t);
+            let ax = (step as i32) * x;
+            let ay = (step as i32) * y;
+            canvas.set_draw_color(Color::RGB(255, 210, 0));
+            // A draw a rectangle which almost fills our window with it !
+            canvas.fill_rect(Rect::new(ax, ay, step, step));
+        }
+        canvas.present();
+        //canvas.clear();
+    }
 }
+
