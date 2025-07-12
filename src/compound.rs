@@ -1,6 +1,9 @@
+use serde::{Deserialize, Serialize};
+use serde_json::Result;
+
 use crate::Atom;
 
-#[derive(PartialEq, Eq, PartialOrd)]
+#[derive(PartialEq, Eq, PartialOrd, Serialize, Deserialize)]
 pub struct Compound {
     pub form : i32,
     pub state : i32

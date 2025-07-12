@@ -1,5 +1,7 @@
 use crate::rule::Rule;
 
+use serde::{Deserialize, Serialize};
+#[derive(Serialize, Deserialize)]
 pub struct Chemistry {
     nb_rules : i32,
     rules : Vec<Rule>

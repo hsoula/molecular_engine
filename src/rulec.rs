@@ -1,6 +1,6 @@
 use crate::compound::Compound;
-
-#[derive(PartialEq, Eq)]
+use serde::{Deserialize, Serialize};
+#[derive(PartialEq, Eq,  Serialize, Deserialize)]
 pub struct RuleC {
     pub contact : bool,
     pub a1 : Compound,

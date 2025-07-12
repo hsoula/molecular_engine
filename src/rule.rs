@@ -1,7 +1,8 @@
 
 use crate::compound::Compound;
 use crate::rulec::RuleC;
-
+use serde::{Deserialize, Serialize};
+#[derive(Serialize, Deserialize)]
 pub struct Rule {
     pub substrate : RuleC,
     pub product : RuleC,
