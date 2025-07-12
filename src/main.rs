@@ -7,8 +7,8 @@ use crate::compound::Compound;
 use crate::rule::Rule;
 use crate::rulec::RuleC;
 use crate::chemistry::Chemistry;
-
-
+use std::fs::File;
+use std::io::Write;
 use rand;
 
 
@@ -151,7 +151,20 @@ impl Reactor {
         }
         true
     }
+    fn export_to_text(&self, filename: String) {
+        let mut file = File::create(&filename).expect("creation failed");;
+        for i in 0..self.atoms.len() {
+            file.write_all(self.atoms[i].export_to_text().as_bytes());
+        }
+        for i in 0..self.atoms.len() {
+            for j in 0..self.atoms[i].link.len() {
+                let s = self.atoms[i].id.to_string() +  " " + &self.atoms[i].link[j].to_string() +"\n";
+                file.write_all(s.as_bytes());
+            }
 
+        }
+
+    }
 }
 struct Atom{
     x: i32,
@@ -166,7 +179,13 @@ impl Atom{
     fn new(x: i32, y: i32, id : i32) -> Atom {
         Atom {x, y, link:Vec::new(),  id, form:-1, state:-1 }
     }
-
+    fn export_to_text(& self) -> String {
+        let mut s = self.id.to_string();
+        s = s + " " + &self.x.to_string()+ " " + &self.y.to_string();
+        s = s + " " + &self.form.to_string()+ " " + &self.state.to_string();
+        s = s + "\n";
+        s
+    }
     fn set_form(&mut self, form : i32) {
         self.form = form;
     }
