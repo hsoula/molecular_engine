@@ -16,5 +16,5 @@
 
 - [] treat chemical rules
 
-- [x] windoww with sdl 
+- [x] window with sdl 
   - [] integration with structs

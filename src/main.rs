@@ -253,9 +253,9 @@ impl Atom{
 
 fn main() {
 
-    let n = 5000;
-    let w = 400;
-    let h = 400;
+    let n = 50;
+    let w = 40;
+    let h = 40;
     let mut reactor = Reactor::new(w, h, n);
     reactor.fill_random();
     for i in 0..1000 {
@@ -316,7 +316,6 @@ fn main() {
             let y = i.y;
             //println!("x: {}, y: {}", x, y);
             let	step = (800 / reactor.w) as u32;
-            //draw_fsquare(&mwindow, step * x, step * y, (x + 1) * step, (y + 1) * step, color_t);
             let ax = (step as i32) * x;
             let ay = (step as i32) * y;
             canvas.set_draw_color(Color::RGB(255, 210, 0));
