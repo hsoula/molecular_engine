@@ -15,11 +15,11 @@ impl Rule {
         let state_s1 = array[2];
         let form_s2 = array[3];
         let state_s2 = array[4];
-        let contact_p = array[0];
-        let form_p1 = array[1];
-        let state_p1 = array[2];
-        let form_p2 = array[3];
-        let state_p2 = array[4];
+        let contact_p = array[5];
+        let form_p1 = array[6];
+        let state_p1 = array[7];
+        let form_p2 = array[8];
+        let state_p2 = array[9];
         let s1 = Compound{form: form_s1, state: state_s1 };
         let s2 = Compound{form: form_s2, state: state_s2 };
         let p1 = Compound{form: form_p1, state: state_p1 };
