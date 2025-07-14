@@ -2,8 +2,6 @@ use std::fs::File;
 use crate::Atom;
 use crate::chemistry::Chemistry;
 use std::io::Write;
-use crate::compound::Compound;
-use crate::rulec::RuleC;
 use crate::rule::Rule;
 
 pub struct Reactor {
@@ -28,12 +26,12 @@ impl Reactor {
     fn xy_to_pos(&self, x: i32, y: i32) -> usize {
         (y * self.w + x) as usize
     }
-    fn add_rule_from_array(&mut self, array: Vec<i32>) {
-        self.chem.add_rule_from_array(array);
-    }
-    fn add_rule_from_text(&mut self, line: String) {
-        self.chem.add_rule_from_text(line);
-    }
+    // fn add_rule_from_array(&mut self, array: Vec<i32>) {
+    //     self.chem.add_rule_from_array(array);
+    // }
+    // fn add_rule_from_text(&mut self, line: String) {
+    //     self.chem.add_rule_from_text(line);
+    // }
     pub fn add_rule(&mut self, r : Rule) { self.chem.add_rule(r); }
     pub fn fill_random(&mut self) {
 
@@ -158,7 +156,7 @@ impl Reactor {
         }
         -1
     }
-    fn set_atom_reaction_at(&mut self, form:i32, state:i32, id:i32) {
+    fn set_atom_reaction_at(&mut self, form:char, state:i32, id:i32) {
         if id >= 0 && id < self.atoms.len() as i32 {
             self.atoms[id as usize].form = form;
             self.atoms[id as usize].state = state;
@@ -185,7 +183,7 @@ impl Reactor {
         true
     }
     fn export_to_text(&self, filename: String) {
-        let mut file = File::create(&filename).expect("creation failed");;
+        let mut file = File::create(&filename).expect("creation failed");
         for i in 0..self.atoms.len() {
             file.write_all(self.atoms[i].export_to_text().as_bytes());
         }
@@ -214,7 +212,7 @@ impl Reactor {
                         } else {
                             // apply rule
                             let r = r.unwrap();
-                            println!("APPLY contact r: {}, r: {} ", r.substrate.a1.state, r.substrate.a2.state);
+                            println!("apply rule r: {}, r: {} ", r.substrate.a1.state, r.substrate.a2.state);
                             if r.substrate.a1.form == a.form && r.substrate.a1.state == a.state {
                                 self.atoms[id1 as usize].state = r.product.a1.state;
                                 self.atoms[id2 as usize].state = r.product.a2.state;

@@ -12,17 +12,16 @@ mod snip_tests;
 mod reactor;
 mod atom;
 
-use crate::compound::Compound;
+use crate::compound::{new_compound_from_text, Compound};
 use crate::rule::Rule;
 use crate::rulec::RuleC;
-use crate::chemistry::Chemistry;
+use crate::rule::new_rule_from_text;
 use crate::atom::Atom;
 use crate::reactor::Reactor;
 
 use std::io::Write;
 use rand;
 use sdl3::rect::{Point, Rect};
-use sdl3::render::FRect;
 use serde_json::json;
 
 fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
@@ -98,7 +97,7 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
 
         canvas.present();
         //canvas.clear();
-        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 1200));
+ //       ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 1200));
     }
 }
 fn main() {
@@ -107,33 +106,43 @@ fn main() {
     let w = 100;
     let h = 100;
     let mut reactor = Reactor::new(w, h, n);
-    let c = Compound{form: 0, state: 0};
-    let d = Compound{form: 0, state: 1};
-    let r = RuleC{contact:false, a1:c, a2:d};
-    println!("{}", r.get_key());
-    let c1 = Compound{form: 0, state: 1};
-    let d1 = Compound{form: 0, state: 2};
-    let r1 = RuleC{contact:true, a1:c1, a2:d1};
-    let r0 = Rule{substrate:r, product:r1, id:0};
+    // let c = Compound{form: 'a', state: 0};
+    // let d = Compound{form: 'a', state: 1};
+    // let r = RuleC{contact:false, a1:c, a2:d};
+    // println!("{}", r.get_key());
+    // let c1 = Compound{form: 'a', state: 1};
+    // let d1 = Compound{form: 'a', state: 2};
+    // let r1 = RuleC{contact:true, a1:c1, a2:d1};
+    // let r0 = Rule{substrate:r, product:r1, id:0};
+    let s = "a_0(+)a_1->a_1(.)a_2";
+    let r0 = new_rule_from_text(s.to_string(),0);
     reactor.add_rule(r0);
+    let s = "a_2(+)a_0->a_3(.)a_1";
+    let r0 = new_rule_from_text(s.to_string(),1);
+    println!("{}",r0.to_string());
+    let s = "a_3(.)a_1->a_2(.)a_4";
+    let r0 = new_rule_from_text(s.to_string(),1);
 
-    let c = Compound{form: 0, state: 1};
-    let d = Compound{form: 0, state: 2};
-    let r = RuleC{contact:true, a1:c, a2:d};
-    println!("{}", r.get_key());
-    let c1 = Compound{form: 0, state: 4};
-    let d1 = Compound{form: 0, state: 1};
-    let r1 = RuleC{contact:false, a1:c1, a2:d1};
-    let r0 = Rule{substrate:r, product:r1, id:1};
-    reactor.add_rule(r0);
+    //
+    // let c = Compound{form: 'a', state: 1};
+    // let d = Compound{form: 'a', state: 2};
+    // let r = RuleC{contact:true, a1:c, a2:d};
+    // println!("{}", r.get_key());
+    // let c1 = Compound{form: 'a', state: 4};
+    // let d1 = Compound{form: 'a', state: 1};
+    // let r1 = RuleC{contact:false, a1:c1, a2:d1};
+    // let r0 = Rule{substrate:r, product:r1, id:1};
+    //reactor.add_rule(r0);
 
     reactor.fill_random();
     for i in 1..n {
-        reactor.atoms[i as usize].form = 0;
+        reactor.atoms[i as usize].form = 'a';
         reactor.atoms[i as usize].state = 0;
     }
-    reactor.atoms[0 as usize].form = 0;
-    reactor.atoms[0 as usize].state = 1;
+    for i in 1..4 {
+        reactor.atoms[i as usize].form = 'a';
+        reactor.atoms[i as usize].state = 1;
+    }
 
     // for i in 0..100 {
     //     let x = reactor.move_all_atoms();
@@ -142,7 +151,7 @@ fn main() {
 
     //let s = json!(r0);
     //println!("{}", s);
-    display_window_loop(&mut reactor, 1000000);
+    display_window_loop(&mut reactor, 10);
 
 }
 

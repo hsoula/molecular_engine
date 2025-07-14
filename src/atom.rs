@@ -6,14 +6,14 @@ pub struct Atom{
     pub y: i32,
     pub link : Vec<i32>,
     pub id : i32,
-    pub form : i32,
+    pub form : char,
     pub state : i32,
     pub elasticity : i32
 }
 
 impl Atom{
     pub fn new(x: i32, y: i32, id : i32) -> Atom {
-        Atom {x, y, link:Vec::new(),  id, form:-1, state:-1, elasticity:10}
+        Atom {x, y, link:Vec::new(),  id, form:'a', state:-1, elasticity:10}
     }
     pub fn export_to_text(& self) -> String {
         let mut s = self.id.to_string();
@@ -22,7 +22,7 @@ impl Atom{
         s = s + "\n";
         s
     }
-    fn set_form(&mut self, form : i32) {
+    fn set_form(&mut self, form : char) {
         self.form = form;
     }
     fn set_state(&mut self, state : i32) {
