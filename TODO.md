@@ -3,18 +3,21 @@
 - [] file exporter/importer:
   - [] format : id x y form state 
   - [] follow by link : id1 id2
-  - [x] json exporter
+  - [] json exporter
 
-- [] move particles with string/links
-  - [] introduce elasticity 
+- [x] move particles with string/links
+  - [x] introduce elasticity 
   - [] create cell structure procedurally
 
 - [] create in/out particles from cells
 
-- [] rules loaders / chemistry loaders
-  - [] json
+- [x] rules loaders / chemistry loaders
+  - [x] json
 
-- [] treat chemical rules
+- [x] treat chemical rules
 
 - [x] window with sdl 
-  - [] integration with structs
+  - [x] integration with structs
+- [] dirty system for reactor
+  - [] pass through link rules
+  - 

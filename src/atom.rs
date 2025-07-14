@@ -13,7 +13,7 @@ pub struct Atom{
 
 impl Atom{
     pub fn new(x: i32, y: i32, id : i32) -> Atom {
-        Atom {x, y, link:Vec::new(),  id, form:-1, state:-1, elasticity:40}
+        Atom {x, y, link:Vec::new(),  id, form:-1, state:-1, elasticity:10}
     }
     pub fn export_to_text(& self) -> String {
         let mut s = self.id.to_string();
@@ -42,6 +42,10 @@ impl Atom{
 
     pub fn link(&mut self, id: i32 ) {
         self.link.push(id);
+    }
+    pub fn unlink(&mut self, id: i32 ) {
+        let index = self.link.iter().position(|x| *x == id).unwrap();
+        self.link.remove(index);
     }
 
     fn is_linked(&self, id:i32) -> i32 {

@@ -13,6 +13,7 @@ pub struct Reactor {
     pub atoms: Vec<Atom>,
     grid : Vec<i32>,
     chem : Chemistry,
+    dirty : bool
 }
 
 impl Reactor {
@@ -20,7 +21,7 @@ impl Reactor {
 
         let atoms = Vec::new();
         let grid = vec![-1 ; (w * h) as usize];
-        Reactor {w, h, nb, atoms, grid, chem: Chemistry::new()}
+        Reactor {w, h, nb, atoms, grid, chem: Chemistry::new(), dirty:false}
     }
     pub fn get_w(&self) -> i32 { self.w }
     pub fn get_h(&self) -> i32 { self.h }
@@ -77,7 +78,10 @@ impl Reactor {
         let r = self.chem.find_rule_from_atoms(false, a, b);
         if r.is_none()
         {
-            //println!("id1: {}, id2: {}", id1, id2);
+            println!("id1: {}, id2: {}", id1, id2);
+            if id1 == 0 {
+                println!("RULE {} {} {} {}",a.form, a.state,b.form,b.state);
+            }
         }
         else {
             // apply rule
@@ -86,10 +90,12 @@ impl Reactor {
             if r.substrate.a1.form == a.form && r.substrate.a1.state == a.state {
                 self.atoms[id1 as usize].state = r.product.a1.state;
                 self.atoms[id2 as usize].state = r.product.a2.state;
+                self.dirty = true;
             }
             else {
                 self.atoms[id2 as usize].state = r.product.a1.state;
                 self.atoms[id1 as usize].state = r.product.a2.state;
+                self.dirty = true;
             }
             if r.product.contact == true {
                 self.atoms[id1 as usize].link( id2);
@@ -190,6 +196,46 @@ impl Reactor {
             }
 
         }
+    }
+    pub fn check_linked_rule(&mut self) {
+        if self.dirty {
+            'dirty: loop {
+                self.dirty = false;
+                for id1 in 0..self.atoms.len() {
+                    for j in 0..self.atoms[id1 as usize].link.len() {
+                        let id2 = self.atoms[id1 as usize].link[j];
+                        let a = &self.atoms[id1 as usize];
+                        let b = &self.atoms[id2 as usize];
 
+                        let r = self.chem.find_rule_from_atoms(true, a, b);
+                        if r.is_none()
+                        {
+                            // do nothing
+                        } else {
+                            // apply rule
+                            let r = r.unwrap();
+                            println!("APPLY contact r: {}, r: {} ", r.substrate.a1.state, r.substrate.a2.state);
+                            if r.substrate.a1.form == a.form && r.substrate.a1.state == a.state {
+                                self.atoms[id1 as usize].state = r.product.a1.state;
+                                self.atoms[id2 as usize].state = r.product.a2.state;
+                                self.dirty = true;
+                            } else {
+                                self.atoms[id2 as usize].state = r.product.a1.state;
+                                self.atoms[id1 as usize].state = r.product.a2.state;
+                                self.dirty = true;
+                            }
+                            if r.product.contact == false {
+                                self.atoms[id1 as usize].unlink(id2);
+                                self.atoms[id2 as usize].unlink(id1 as i32);
+                            }
+                        }
+                    }
+
+                    if self.dirty == false {
+                        break 'dirty;
+                    }
+                }
+            }
+        }
     }
 }
