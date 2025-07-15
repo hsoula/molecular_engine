@@ -33,6 +33,7 @@ impl Reactor {
     //     self.chem.add_rule_from_text(line);
     // }
     pub fn add_rule(&mut self, r : Rule) { self.chem.add_rule(r); }
+    pub fn add_rule_from_text(&mut self, s : String) { self.chem.add_rule_from_string(s); }
     pub fn fill_random(&mut self) {
 
         for i in 0..self.nb {

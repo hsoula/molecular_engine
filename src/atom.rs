@@ -13,7 +13,7 @@ pub struct Atom{
 
 impl Atom{
     pub fn new(x: i32, y: i32, id : i32) -> Atom {
-        Atom {x, y, link:Vec::new(),  id, form:'a', state:-1, elasticity:10}
+        Atom {x, y, link:Vec::new(),  id, form:'a', state:-1, elasticity:20}
     }
     pub fn export_to_text(& self) -> String {
         let mut s = self.id.to_string();

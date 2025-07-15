@@ -97,7 +97,7 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
 
         canvas.present();
         //canvas.clear();
- //       ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 1200));
+        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 120));
     }
 }
 fn main() {
@@ -119,9 +119,12 @@ fn main() {
     reactor.add_rule(r0);
     let s = "a_2(+)a_0->a_3(.)a_1";
     let r0 = new_rule_from_text(s.to_string(),1);
-    println!("{}",r0.to_string());
+    reactor.add_rule(r0);
+
+
     let s = "a_3(.)a_1->a_2(.)a_4";
     let r0 = new_rule_from_text(s.to_string(),1);
+    reactor.add_rule(r0);
 
     //
     // let c = Compound{form: 'a', state: 1};
@@ -135,11 +138,11 @@ fn main() {
     //reactor.add_rule(r0);
 
     reactor.fill_random();
-    for i in 1..n {
+    for i in 0..n {
         reactor.atoms[i as usize].form = 'a';
         reactor.atoms[i as usize].state = 0;
     }
-    for i in 1..4 {
+    for i in 0..4 {
         reactor.atoms[i as usize].form = 'a';
         reactor.atoms[i as usize].state = 1;
     }
@@ -151,7 +154,7 @@ fn main() {
 
     //let s = json!(r0);
     //println!("{}", s);
-    display_window_loop(&mut reactor, 10);
+    display_window_loop(&mut reactor, 10000000);
 
 }
 
