@@ -20,4 +20,12 @@
   - [x] integration with structs
 - [] dirty system for reactor
   - [] pass through link rules
-  - 
+- [] kcf 
+  - [] kcf loader / exporter 
+  - [] python rust ? 
+- [] lipids bilayers 
+  - [] autoorganisation / rules 
+  - [] synthesis 
+- [] actin transport 
+  - [] write down the rules
+  - [] code 

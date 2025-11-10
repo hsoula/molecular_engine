@@ -3,7 +3,7 @@ use crate::rule::Rule;
 use serde::{Deserialize, Serialize};
 use crate::atom::Atom;
 use crate::rulec::RuleC;
-
+use crate::rule::new_rules_from_text;
 #[derive(Serialize, Deserialize)]
 pub struct Chemistry {
     nb_rules : i32,
@@ -17,6 +17,11 @@ impl Chemistry {
     }
     pub fn add_rule(&mut self, rule: Rule) {
         self.rules.push(rule);
+    }
+    pub fn add_rule_from_string(&mut self, s: String) {
+        let offset = self.rules.len();
+        let mut rules = new_rules_from_text(s, offset as i32);
+        self.rules.append(&mut rules);
     }
     // pub fn add_rule_from_array(&mut self, array: Vec<i32> ) {
     //     let id = self.nb_rules;
@@ -48,9 +53,9 @@ impl Chemistry {
     pub fn find_rule_from_atoms(&self, contact : bool,  a : &Atom, b : &Atom) -> Option<&Rule> {
         let c1 = a.compound();
         let c2 = b.compound();
-        println!(" state {} {}", c1.state, c2.state);
+   //     println!(" state {} {}", c1.state, c2.state);
         let rx = RuleC::new(contact, c1, c2);
-        println!("contact {}", rx.get_key());
+    //    println!("contact {}", rx.get_key());
         self.find_rule_from_string(rx.get_key())
     }
 }
