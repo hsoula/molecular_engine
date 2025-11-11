@@ -44,7 +44,6 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
     let mut t = 0;
 
     'running: loop {
-
         t += 1 ;
         //canvas.clear();
         canvas.set_draw_color(Color::RGB(0, 0, 0));
@@ -66,16 +65,20 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
         // The rest of the game loop goes here...
         let a = reactor.move_all_atoms();
         reactor.check_linked_rule();
-        println!("{} {}", t, a);
+        //println!("{} {}", t, a);
         for i in reactor.atoms.iter() {
             let x = i.x;
             let y = i.y;
-            let s = i.state;
+
             //println!("x: {}, y: {}", x, y);
             let	step = (800 / reactor.get_w()) as u32;
             let ax = (step as i32) * x;
             let ay = (step as i32) * y;
-            canvas.set_draw_color(Color::RGB(255, 210, (s * 255 /4) as u8));
+            let mut s = 0;
+            if (i.form == 'b')  {
+                s =255;
+            }
+            canvas.set_draw_color(Color::RGB(255, s, s as u8));
             // A draw a rectangle which almost fills our window with it !
             canvas.fill_rect(Rect::new(ax, ay, step, step));
 
@@ -102,7 +105,7 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
 }
 fn main() {
 
-    let n = 100;
+    let n = 600;
     let w = 100;
     let h = 100;
     let mut reactor = Reactor::new(w, h, n);
@@ -114,15 +117,30 @@ fn main() {
     // let d1 = Compound{form: 'a', state: 2};
     // let r1 = RuleC{contact:true, a1:c1, a2:d1};
     // let r0 = Rule{substrate:r, product:r1, id:0};
-    let s = "a_0(+)a_1->a_1(.)a_2";
+    let s = "b_0(+)a_0->b_1(.)a_1";
     let r0 = new_rule_from_text(s.to_string(),0);
     reactor.add_rule(r0);
-    let s = "a_2(+)a_0->a_3(.)a_1";
+    let s = "a_1(+)a_0->a_2(.)a_3";
+    let r0 = new_rule_from_text(s.to_string(),1);
+    reactor.add_rule(r0);
+    let s = "b_1(.)a_2->b_0(+)a_4";
+    let r0 = new_rule_from_text(s.to_string(),1);
+    reactor.add_rule(r0);
+    let s = "a_4(.)a_3->a_5(.)a_6";
     let r0 = new_rule_from_text(s.to_string(),1);
     reactor.add_rule(r0);
 
 
-    let s = "a_3(.)a_1->a_2(.)a_4";
+    let s = "a_6(+)a_6->a_7(.)a_7";
+    let r0 = new_rule_from_text(s.to_string(),1);
+    reactor.add_rule(r0);
+    let s = "a_7(.)a_5->a_7(.)a_8";
+    let r0 = new_rule_from_text(s.to_string(),1);
+    reactor.add_rule(r0);
+    let s = "a_8(+)a_8->a_9(.)a_9";
+    let r0 = new_rule_from_text(s.to_string(),1);
+    reactor.add_rule(r0);
+    let s = "a_9(.)a_7->a_6(.)a_5";
     let r0 = new_rule_from_text(s.to_string(),1);
     reactor.add_rule(r0);
 
@@ -142,9 +160,9 @@ fn main() {
         reactor.atoms[i as usize].form = 'a';
         reactor.atoms[i as usize].state = 0;
     }
-    for i in 0..4 {
-        reactor.atoms[i as usize].form = 'a';
-        reactor.atoms[i as usize].state = 1;
+    for i in 0..50 {
+        reactor.atoms[i as usize].form = 'b';
+        reactor.atoms[i as usize].state = 0;
     }
 
     // for i in 0..100 {
