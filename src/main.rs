@@ -11,6 +11,8 @@ mod rulec;
 mod snip_tests;
 mod reactor;
 mod atom;
+mod molecule;
+mod links;
 
 use crate::compound::{new_compound_from_text, Compound};
 use crate::rule::Rule;
