@@ -1,0 +1,30 @@
+[
+  {
+    "string_name" : "a0(+)a1->a1+a2",
+    "substrates": {
+      "contact" : "False",
+      "a1": "a0",
+      "a2": "a1"
+    },
+    "products": {
+      "contact" : "False",
+      "a1": "a1",
+      "a2": "a2"
+    }
+  },
+  {
+    "string_name" : "a0(+)a1->a1+a2",
+    "substrates": {
+      "contact" : "False",
+      "a1": "a0",
+      "a2": "a1"
+    },
+    "products": {
+      "contact" : "False",
+      "a1": "a1",
+      "a2": "a2"
+    }
+  }
+]
+
+
