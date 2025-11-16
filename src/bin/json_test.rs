@@ -58,7 +58,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .map_or(String::new(), |c| format!(" - Comment: {}", c))
             );
         }
-
+        
         // Afficher quelques statistiques
         println!("\n=== STATISTIQUES ===");
         println!("Nombre d'atomes: {}", compound.atoms.len());

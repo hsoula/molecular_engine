@@ -18,14 +18,13 @@ struct Reaction {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Ouvrir et lire le fichier JSON
-    let file = File::open("reactions.json")?;
+    let file = File::open("data/rules.json")?;
     let reader = BufReader::new(file);
-
     // Parser le JSON (c'est un tableau de réactions)
     let reactions: Vec<Reaction> = serde_json::from_reader(reader)?;
+    let mut i = 0;
 
-    // Traiter chaque réaction
-    for (i, reaction) in reactions.into_iter().enumerate() {
+    for reaction in &reactions {
         println!("=== Réaction {} ===", i + 1);
         println!("Équation: {}", reaction.string_name);
 
@@ -38,19 +37,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("  - Contact: {}", reaction.products.contact);
         println!("  - a1: {}", reaction.products.a1);
         println!("  - a2: {}", reaction.products.a2);
-
+        i += 1;
         println!();
     }
+
 
     // Statistiques générales
     println!("=== STATISTIQUES ===");
     println!("Nombre total de réactions: {}", reactions.len());
 
     // Compter les réactions avec/sans contact
-    let with_contact = reactions.into_iter()
-        .filter(|r| r.substrates.contact == "True" || r.products.contact == "True")
-        .count();
-    println!("Réactions avec contact: {}", with_contact);
+    let contact_rules :Vec<&Reaction>= reactions.iter()
+        .filter(|r| r.substrates.contact == "True" || r.products.contact == "True").collect();
+    for r in contact_rules {
+        println!("Réactions avec contact: {}", r.string_name);
+
+    }
 
     Ok(())
 }
