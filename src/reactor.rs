@@ -1,8 +1,28 @@
 use std::fs::File;
 use crate::Atom;
 use crate::chemistry::Chemistry;
-use std::io::Write;
+use std::io::{BufReader, Write};
 use crate::rule::Rule;
+
+use serde::Deserialize;
+use std::fs::File;
+use std::io::BufReader;
+use crate::compound::Compound;
+use crate::rulec::RuleC;
+
+#[derive(Debug, Deserialize)]
+struct ReactionSide {
+    contact: String,
+    a1: String,
+    a2: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct Reaction {
+    string_name: String,
+    substrates: ReactionSide,
+    products: ReactionSide,
+}
 
 pub struct Reactor {
     w:i32,
@@ -32,6 +52,29 @@ impl Reactor {
     // fn add_rule_from_text(&mut self, line: String) {
     //     self.chem.add_rule_from_text(line);
     // }
+    fn add_rule_from_json(&mut self, json:&str) -> Result<(), Box<dyn std::error::Error>>  {
+        let file = File::open(json)?;
+        let reader = BufReader::new(file);
+        let reactions: Vec<Reaction> = serde_json::from_reader(reader)?;
+/*
+        for reaction in &reactions {
+
+            let id = self.chem.get_nb_rules();
+            let cs : bool = if reaction.substrates.contact == "+" { true } else { false };
+            let substrate : RuleC =  RuleC{contact:cs,
+                a1:Compound{form:form1, state: state1},
+                a2:Compound{form:form2, state:state2}};
+            let product : RuleC =  RuleC{contact:contact,
+                a1:Compound{form:form1, state: state1},
+                a2:Compound{form:form2, state:state2}};
+            let mut r: Rule = Rule{product:product, substrate:substrate, id:id};
+            self.chem.add_rule(r);
+        }
+
+ */
+        Ok(())
+    }
+
     pub fn add_rule(&mut self, r : Rule) { self.chem.add_rule(r); }
     pub fn add_rule_from_text(&mut self, s : String) { self.chem.add_rule_from_string(s); }
     pub fn fill_random(&mut self) {

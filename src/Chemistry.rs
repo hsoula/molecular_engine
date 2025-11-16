@@ -6,8 +6,8 @@ use crate::rulec::RuleC;
 use crate::rule::new_rules_from_text;
 #[derive(Serialize, Deserialize)]
 pub struct Chemistry {
-    nb_rules : i32,
-    rules : Vec<Rule>
+     nb_rules : i32,
+     rules : Vec<Rule>
 }
 
 
@@ -17,6 +17,9 @@ impl Chemistry {
     }
     pub fn add_rule(&mut self, rule: Rule) {
         self.rules.push(rule);
+    }
+    pub fn get_nb_rules(&self) -> i32 {
+        self.nb_rules
     }
     pub fn add_rule_from_string(&mut self, s: String) {
         let offset = self.rules.len();
