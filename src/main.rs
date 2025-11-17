@@ -13,7 +13,6 @@ mod reactor;
 mod atom;
 mod molecule;
 mod links;
-
 use crate::atom::Atom;
 use crate::reactor::Reactor;
 
@@ -93,7 +92,10 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
             }
         }
 
-
+        if t % 1000 == 0 {
+            let mol = reactor.find_molecules();
+            println!("MOL {:}",mol.len())
+        }
         canvas.present();
         //canvas.clear();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 120));

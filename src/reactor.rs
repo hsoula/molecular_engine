@@ -1,7 +1,10 @@
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::fs::File;
 use crate::Atom;
-use crate::chemistry::Chemistry;
+use crate::chemistry::{new_chem_from_json, Chemistry};
 use std::io::Write;
+use crate::links::Link;
+use crate::molecule::Molecule;
 use crate::rule::Rule;
 
 pub struct Reactor {
@@ -25,6 +28,57 @@ impl Reactor {
     pub fn get_h(&self) -> i32 { self.h }
     fn xy_to_pos(&self, x: i32, y: i32) -> usize {
         (y * self.w + x) as usize
+    }
+
+    pub fn set_chem_from_json(&mut self, json : String) {
+        self.chem = new_chem_from_json(json);
+    }
+
+    pub fn find_molecules(&self) -> Vec<Molecule> {
+        let mut atom_map: HashMap<u32, &Atom> = self.atoms
+            .iter()
+            .map(|atom| (atom.id as u32, atom))
+            .collect();
+
+        let mut visited = HashSet::new();
+        let mut molecules = Vec::new();
+
+        for atom in &self.atoms {
+            if !visited.contains(&atom.id) {
+                // Trouver une composante connexe avec BFS
+                let mut molecule = Molecule::new();
+                let mut queue = VecDeque::new();
+                let mut component_atoms = HashSet::new();
+
+                queue.push_back(atom.id);
+                visited.insert(atom.id);
+                component_atoms.insert(atom.id);
+
+                while let Some(current_id) = queue.pop_front() {
+                    let current_atom = atom_map[&(current_id as u32)];
+                    molecule.atoms.push(current_atom.id);
+
+                    // Ajouter les liens de l'atome courant
+                    for &neighbor_id in &current_atom.link {
+                        let link = Link::new(current_id, neighbor_id);
+                        if !molecule.links.contains(&link) {
+                            molecule.links.push(link);
+                        }
+
+                        // Ajouter les voisins non visités
+                        if !visited.contains(&neighbor_id) {
+                            visited.insert(neighbor_id);
+                            component_atoms.insert(neighbor_id);
+                            queue.push_back(neighbor_id);
+                        }
+                    }
+                }
+
+                molecules.push(molecule);
+            }
+        }
+
+        molecules
     }
     // fn add_rule_from_array(&mut self, array: Vec<i32>) {
     //     self.chem.add_rule_from_array(array);
@@ -77,15 +131,15 @@ impl Reactor {
         let r = self.chem.find_rule_from_atoms(false, a, b);
         if r.is_none()
         {
-            println!("id1: {}, id2: {}", id1, id2);
-            if id1 == 0 {
-                println!("RULE {} {} {} {}",a.form, a.state,b.form,b.state);
-            }
+         //   println!("id1: {}, id2: {}", id1, id2);
+       //    if id1 == 0 {
+        //        println!("RULE {} {} {} {}",a.form, a.state,b.form,b.state);
+         //   }
         }
         else {
             // apply rule
             let r = r.unwrap();
-            println!("APPLY r: {}, r: {} ", r.substrate.a1.state, r.substrate.a2.state);
+           // println!("APPLY r: {}, r: {} ", r.substrate.a1.state, r.substrate.a2.state);
             if r.substrate.a1.form == a.form && r.substrate.a1.state == a.state {
                 self.atoms[id1 as usize].state = r.product.a1.state;
                 self.atoms[id2 as usize].state = r.product.a2.state;

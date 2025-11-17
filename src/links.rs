@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Link {
     pub links : [i32; 2]
 }
