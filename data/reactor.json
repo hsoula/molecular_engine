@@ -1,0 +1,34 @@
+{
+
+  "chemistry": {
+    "nb_rules" : 1,
+    "rules": [
+      {
+        "string_name": "a0(+)a1->a1+a2",
+        "id": 0,
+        "substrate": {
+          "contact": false,
+          "a1": {
+            "form": "a",
+            "state": 0
+          },
+          "a2": {
+            "form": "a",
+            "state": 1
+          }
+        },
+        "product": {
+          "contact": true,
+          "a1": {
+            "form": "a",
+            "state": 1
+          },
+          "a2": {
+            "form": "a",
+            "state": 2
+          }
+        }
+      }
+    ]
+  }
+}

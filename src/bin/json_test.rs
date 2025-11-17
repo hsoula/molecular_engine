@@ -2,6 +2,8 @@ use serde::Deserialize;
 use std::fs::File;
 use std::io::BufReader;
 
+mod test_molecules;
+
 #[derive(Debug, Deserialize)]
 struct Atoms {
     index: u32,

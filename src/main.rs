@@ -14,18 +14,12 @@ mod atom;
 mod molecule;
 mod links;
 
-use crate::compound::{new_compound_from_text, Compound};
-use crate::rule::Rule;
-use crate::rulec::RuleC;
-use crate::rule::new_rule_from_text;
 use crate::atom::Atom;
 use crate::reactor::Reactor;
 
 use std::io::Write;
 use rand;
 use sdl3::rect::{Point, Rect};
-use serde_json::json;
-
 fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
 
     let sdl_context = sdl3::init().unwrap();
@@ -111,6 +105,7 @@ fn main() {
     let w = 100;
     let h = 100;
     let mut reactor = Reactor::new(w, h, n);
+    reactor.set_chem_from_json("data/rules.json".to_string());
     // let c = Compound{form: 'a', state: 0};
     // let d = Compound{form: 'a', state: 1};
     // let r = RuleC{contact:false, a1:c, a2:d};
@@ -119,6 +114,7 @@ fn main() {
     // let d1 = Compound{form: 'a', state: 2};
     // let r1 = RuleC{contact:true, a1:c1, a2:d1};
     // let r0 = Rule{substrate:r, product:r1, id:0};
+/*
     let s = "b_0(+)a_0->b_1(.)a_1";
     let r0 = new_rule_from_text(s.to_string(),0);
     reactor.add_rule(r0);
@@ -156,15 +152,16 @@ fn main() {
     // let r1 = RuleC{contact:false, a1:c1, a2:d1};
     // let r0 = Rule{substrate:r, product:r1, id:1};
     //reactor.add_rule(r0);
-
+*/
+    
     reactor.fill_random();
     for i in 0..n {
         reactor.atoms[i as usize].form = 'a';
         reactor.atoms[i as usize].state = 0;
     }
     for i in 0..50 {
-        reactor.atoms[i as usize].form = 'b';
-        reactor.atoms[i as usize].state = 0;
+        reactor.atoms[i as usize].form = 'a';
+        reactor.atoms[i as usize].state = 1;
     }
 
     // for i in 0..100 {

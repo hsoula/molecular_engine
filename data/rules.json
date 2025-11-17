@@ -1,28 +1,17 @@
 [
   {
     "string_name" : "a0(+)a1->a1+a2",
-    "substrates": {
-      "contact" : "False",
-      "a1": "a0",
-      "a2": "a1"
+    "id": 0,
+    "substrate": {
+      "contact" : false,
+      "a1": { "form":"a", "state":0},
+      "a2": { "form":"a", "state":1}
     },
-    "products": {
-      "contact" : "False",
-      "a1": "a1",
-      "a2": "a2"
-    }
-  },
-  {
-    "string_name" : "a0(+)a1->a1+a2",
-    "substrates": {
-      "contact" : "False",
-      "a1": "a0",
-      "a2": "a1"
-    },
-    "products": {
-      "contact" : "False",
-      "a1": "a1",
-      "a2": "a2"
+
+    "product": {
+      "contact" : true,
+      "a1": { "form":"a", "state":1},
+      "a2": { "form":"a", "state":2}
     }
   }
 ]

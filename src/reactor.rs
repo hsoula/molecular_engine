@@ -1,7 +1,10 @@
 use std::fs::File;
 use crate::Atom;
 use crate::chemistry::Chemistry;
+use crate::chemistry::new_chem_from_json;
 use std::io::Write;
+use crate::molecule::{find_molecules, Molecule};
+use crate::molecule::find_molecule;
 use crate::rule::Rule;
 
 pub struct Reactor {
@@ -20,6 +23,10 @@ impl Reactor {
         let atoms = Vec::new();
         let grid = vec![-1 ; (w * h) as usize];
         Reactor {w, h, nb, atoms, grid, chem: Chemistry::new(), dirty:false}
+    }
+
+    pub fn set_chem_from_json(&mut self, json:String) {
+        self.chem = new_chem_from_json(json);
     }
     pub fn get_w(&self) -> i32 { self.w }
     pub fn get_h(&self) -> i32 { self.h }
@@ -196,6 +203,12 @@ impl Reactor {
 
         }
     }
+
+    pub fn find_molecules(&self) -> Vec<Molecule>{
+
+        find_molecules(self.atoms)
+    }
+
     pub fn check_linked_rule(&mut self) {
         if self.dirty {
             'dirty: loop {

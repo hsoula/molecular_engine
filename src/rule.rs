@@ -9,6 +9,7 @@ pub struct Rule {
     pub product : RuleC,
     pub id : i32
 }
+
 pub fn new_rule_from_text(s : String, id:i32) -> Rule {
     let parts = s.split("->").collect::<Vec<&str>>();
     let substrate = crate::rulec::new_rulec_from_text(parts[0].to_string());

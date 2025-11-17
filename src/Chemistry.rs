@@ -1,3 +1,5 @@
+use std::fs::File;
+use std::io::BufReader;
 use crate::rule::Rule;
 
 use serde::{Deserialize, Serialize};
@@ -10,6 +12,14 @@ pub struct Chemistry {
     rules : Vec<Rule>
 }
 
+pub fn new_chem_from_json(json : String) -> Chemistry {
+    println!("{}", json);
+    let file = File::open(json).unwrap();
+    let reader = BufReader::new(file);
+    // Parser le JSON (c'est un tableau de réactions)
+    let rules: Vec<Rule> = serde_json::from_reader(reader).unwrap();
+    Chemistry{nb_rules : rules.len() as i32, rules}
+}
 
 impl Chemistry {
     pub fn new()-> Chemistry {
@@ -53,7 +63,7 @@ impl Chemistry {
     pub fn find_rule_from_atoms(&self, contact : bool,  a : &Atom, b : &Atom) -> Option<&Rule> {
         let c1 = a.compound();
         let c2 = b.compound();
-   //     println!(" state {} {}", c1.state, c2.state);
+       //   println!(" state {} {}", c1.state, c2.state);
         let rx = RuleC::new(contact, c1, c2);
     //    println!("contact {}", rx.get_key());
         self.find_rule_from_string(rx.get_key())
