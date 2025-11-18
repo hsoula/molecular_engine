@@ -16,7 +16,7 @@ pub fn new_chem_from_json(json : String) -> Chemistry {
     println!("{}", json);
     let file = File::open(json).unwrap();
     let reader = BufReader::new(file);
-    // Parser le JSON (c'est un tableau de réactions)
+  
     let rules: Vec<Rule> = serde_json::from_reader(reader).unwrap();
     Chemistry{nb_rules : rules.len() as i32, rules}
 }
@@ -66,9 +66,20 @@ impl Chemistry {
     pub fn find_rule_from_atoms(&self, contact : bool,  a : &Atom, b : &Atom) -> Option<&Rule> {
         let c1 = a.compound();
         let c2 = b.compound();
-       //   println!(" state {} {}", c1.state, c2.state);
+      //  println!(" state {} {}", c1.state, c2.state);
         let rx = RuleC::new(contact, c1, c2);
     //    println!("contact {}", rx.get_key());
-        self.find_rule_from_string(rx.get_key())
+        let r = self.find_rule_from_string(rx.get_key());
+        if r.is_none() {
+            let c1 = b.compound();
+            let c2 = a.compound();
+            //  println!(" state {} {}", c1.state, c2.state);
+            let rx = RuleC::new(contact, c1, c2);
+            //    println!("contact {}", rx.get_key());
+            self.find_rule_from_string(rx.get_key())
+        }
+        else {
+            r
+        }
     }
 }

@@ -14,7 +14,8 @@ pub struct Reactor {
     pub atoms: Vec<Atom>,
     grid : Vec<i32>,
     chem : Chemistry,
-    dirty : bool
+    dirty : bool,
+    links : Vec<Link>
 }
 
 impl Reactor {
@@ -22,7 +23,7 @@ impl Reactor {
 
         let atoms = Vec::new();
         let grid = vec![-1 ; (w * h) as usize];
-        Reactor {w, h, nb, atoms, grid, chem: Chemistry::new(), dirty:false}
+        Reactor {w, h, nb, atoms, grid, chem: Chemistry::new(), dirty:false, links : Vec::new()}
     }
     pub fn get_w(&self) -> i32 { self.w }
     pub fn get_h(&self) -> i32 { self.h }
@@ -131,15 +132,11 @@ impl Reactor {
         let r = self.chem.find_rule_from_atoms(false, a, b);
         if r.is_none()
         {
-         //   println!("id1: {}, id2: {}", id1, id2);
-       //    if id1 == 0 {
-        //        println!("RULE {} {} {} {}",a.form, a.state,b.form,b.state);
-         //   }
         }
         else {
             // apply rule
             let r = r.unwrap();
-           // println!("APPLY r: {}, r: {} ", r.substrate.a1.state, r.substrate.a2.state);
+             println!("APPLY r: {}, r: {} ", r.substrate.a1.state, r.substrate.a2.state);
             if r.substrate.a1.form == a.form && r.substrate.a1.state == a.state {
                 self.atoms[id1 as usize].state = r.product.a1.state;
                 self.atoms[id2 as usize].state = r.product.a2.state;
@@ -153,6 +150,7 @@ impl Reactor {
             if r.product.contact == true {
                 self.atoms[id1 as usize].link( id2);
                 self.atoms[id2 as usize].link( id1);
+                self.links.push(Link::new(id1, id2));
             }
         }
 
@@ -256,6 +254,7 @@ impl Reactor {
                 self.dirty = false;
                 for id1 in 0..self.atoms.len() {
                     for j in 0..self.atoms[id1 as usize].link.len() {
+                       // println!("bound {} {}",self.atoms[id1 as usize].link.len(), j);
                         let id2 = self.atoms[id1 as usize].link[j];
                         let a = &self.atoms[id1 as usize];
                         let b = &self.atoms[id2 as usize];
@@ -267,7 +266,7 @@ impl Reactor {
                         } else {
                             // apply rule
                             let r = r.unwrap();
-                            println!("apply rule r: {}, r: {} ", r.substrate.a1.state, r.substrate.a2.state);
+                            println!("apply rule r: {}, r: {} {}", r.substrate.a1.state, r.substrate.a2.state,r.product.contact);
                             if r.substrate.a1.form == a.form && r.substrate.a1.state == a.state {
                                 self.atoms[id1 as usize].state = r.product.a1.state;
                                 self.atoms[id2 as usize].state = r.product.a2.state;
@@ -280,6 +279,22 @@ impl Reactor {
                             if r.product.contact == false {
                                 self.atoms[id1 as usize].unlink(id2);
                                 self.atoms[id2 as usize].unlink(id1 as i32);
+                                println!("unlink {} {} ", id1, id2);
+                                if let Some(idx) = self.links
+                                    .iter()
+                                    .position(|x| x.links[0] == (id1 as i32)  && x.links[1] == id2 )
+                                {
+                                    self.links.remove(idx);
+                                    //println!("unlink {:?}", idx);
+                                }
+                                else if let Some(idx) = self.links
+                                    .iter()
+                                    .position(|x| x.links[1] == (id1 as i32)  && x.links[0] == id2 ) {
+                                    println!("{:?}", idx);
+                                    self.links.remove(idx);
+                                }
+
+                                break 'dirty;
                             }
                         }
                     }
@@ -289,6 +304,11 @@ impl Reactor {
                     }
                 }
             }
+        }
+    }
+    pub fn print_reactor(&self) {
+        for a in &self.atoms {
+            println!("{} {} {}", a.id, a.form, a.state);
         }
     }
 }

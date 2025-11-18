@@ -3,6 +3,8 @@ use sdl3::pixels::Color;
 use sdl3::event::Event;
 use sdl3::keyboard::Keycode;
 use std::time::Duration;
+use rand::SeedableRng;
+use rand::rngs::StdRng;
 
 mod chemistry;
 mod compound;
@@ -69,10 +71,7 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
             let	step = (800 / reactor.get_w()) as u32;
             let ax = (step as i32) * x;
             let ay = (step as i32) * y;
-            let mut s = 0;
-            if (i.form == 'b')  {
-                s =255;
-            }
+            let mut s = (i .state * 255 / 3) as u8;
             canvas.set_draw_color(Color::RGB(255, s, s as u8));
             // A draw a rectangle which almost fills our window with it !
             canvas.fill_rect(Rect::new(ax, ay, step, step));
@@ -91,7 +90,7 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
                 canvas.draw_line(Point::new(x1,y1), Point::new(x2, y2)).unwrap()
             }
         }
-
+        reactor.print_reactor();
         if t % 1000 == 0 {
             let mol = reactor.find_molecules();
             println!("MOL {:}",mol.len())
@@ -103,9 +102,11 @@ fn display_window_loop(reactor : &mut Reactor, tmax:i32) {
 }
 fn main() {
 
-    let n = 600;
-    let w = 100;
-    let h = 100;
+    let n = 5;
+    let w = 10;
+    let h = 10;
+    let seed = 42_u64;
+    let mut rng = StdRng::seed_from_u64(seed);
     let mut reactor = Reactor::new(w, h, n);
     reactor.set_chem_from_json("data/rules.json".to_string());
     // let c = Compound{form: 'a', state: 0};
@@ -161,7 +162,7 @@ fn main() {
         reactor.atoms[i as usize].form = 'a';
         reactor.atoms[i as usize].state = 0;
     }
-    for i in 0..50 {
+    for i in 0..1 {
         reactor.atoms[i as usize].form = 'a';
         reactor.atoms[i as usize].state = 1;
     }

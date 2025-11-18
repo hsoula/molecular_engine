@@ -13,7 +13,38 @@
       "a1": { "form":"a", "state":1},
       "a2": { "form":"a", "state":2}
     }
+  },
+  {
+    "string_name" : "a1.a2->a2.a3",
+    "id": 1,
+    "substrate": {
+      "contact" : true,
+      "a1": { "form":"a", "state":1},
+      "a2": { "form":"a", "state":2}
+    },
+
+    "product": {
+      "contact" : true,
+      "a1": { "form":"a", "state":2},
+      "a2": { "form":"a", "state":3}
+    }
+  },
+  {
+    "string_name" : "a2.a3->a0+a1",
+    "id": 2,
+    "substrate": {
+      "contact" : true,
+      "a1": { "form":"a", "state":2},
+      "a2": { "form":"a", "state":3}
+    },
+
+    "product": {
+      "contact" : false,
+      "a1": { "form":"a", "state":0},
+      "a2": { "form":"a", "state":1}
+    }
   }
+
 ]
 
 

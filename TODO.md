@@ -1,9 +1,19 @@
 # TODO
+- Data
+  - [x] links database
+  - [] bug order rules
+  - [] better reaction parser
+  - [] json exporter/loader 
+
+- Replicator 
+  - [] wildcards rules 
+  - [] molecule loader 
+  - [] make the actual sims
+
 
 - [] file exporter/importer:
   - [] format : id x y form state 
   - [] follow by link : id1 id2
-  - [] json exporter
 
 - [x] move particles with string/links
   - [x] introduce elasticity 
