@@ -9,7 +9,11 @@
   - [x] introduce elasticity 
   - [] create cell structure procedurally
 
-- [] create in/out particles from cells
+- [] data system
+  - make link system at the reactor level
+  - update molecule
+  - json molecule adding
+  
 
 - [x] rules loaders / chemistry loaders
   - [x] json
@@ -22,10 +26,8 @@
   - [] pass through link rules
 - [] kcf 
   - [] kcf loader / exporter 
-  - [] python rust ? 
-- [] lipids bilayers 
-  - [] autoorganisation / rules 
-  - [] synthesis 
-- [] actin transport 
-  - [] write down the rules
-  - [] code 
+  - [] python rust ?
+
+- [] create in/out particles from cells
+
+  
