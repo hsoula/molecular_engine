@@ -1,0 +1,12 @@
+# The rules of data/rules.json in the text format, plus a wildcard example.
+# (rules.json can still be loaded directly: acsim --rules data/rules.json)
+
+set temperature 0.3
+set food a
+
+a0 + a1 -> a1 . a2
+a1 . a2 -> a2 . a3
+a2 . a3 -> a0 + a1
+
+# any type in state 1 meeting any type in state 2 bonds, keeping their types
+*1 + *2 -> *3 . *4

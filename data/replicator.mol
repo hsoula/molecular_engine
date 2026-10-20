@@ -1,0 +1,18 @@
+# Molecules for acsim (key I inserts the current one at the mouse, Tab cycles).
+# Chain lines use the rule notation: '.' (or '-') is a bond, laid out on a line.
+
+replicator: e8.a1.b1.c1.d1.f1
+short: e8.a1.f1
+long: e8.a1.b1.c1.d1.a1.b1.c1.d1.f1
+
+# explicit form: atom <type> <state> <x> <y>, bond <i> <j>
+molecule ring
+atom a 1 0.0 0.0
+atom b 1 1.0 0.0
+atom c 1 1.0 1.0
+atom d 1 0.0 1.0
+bond 0 1
+bond 1 2
+bond 2 3
+bond 3 0
+end

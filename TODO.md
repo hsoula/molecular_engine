@@ -2,12 +2,12 @@
 - Data
   - [x] links database
   - [] bug order rules
-  - [] better reaction parser
+  - [x] better reaction parser (text .chem files)
   - [] json exporter/loader 
 
 - Replicator 
-  - [] wildcards rules 
-  - [] molecule loader 
+  - [x] wildcards rules (continuous engine, src/sim/rules.rs)
+  - [x] molecule loader (.mol files, chain notation)
   - [] make the actual sims
 
 
@@ -32,12 +32,15 @@
 
 - [x] window with sdl 
   - [x] integration with structs
-- [] dirty system for reactor
-  - [] pass through link rules
+- [x] dirty system for reactor (continuous engine)
+  - [x] pass through link rules
 - [] kcf 
   - [] kcf loader / exporter 
   - [] python rust ?
 
 - [] create in/out particles from cells
 
-  
+- [x] continuous engine (src/sim): sphere collisions, springs per type pair
+- [x] connected components, molecule extraction / insertion
+- [x] SDL viewer with keys and stats (acsim), headless runner (acrun)
+- [] replicator cross-talk in continuous space (see README)

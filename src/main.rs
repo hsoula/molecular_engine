@@ -10,7 +10,6 @@ mod chemistry;
 mod compound;
 mod rule;
 mod rulec;
-mod snip_tests;
 mod reactor;
 mod atom;
 mod molecule;
